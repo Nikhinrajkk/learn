@@ -101,6 +101,27 @@ function readBody(req) {
   })
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+async function streamFetchResponse(res, text) {
+  res.writeHead(200, {
+    ...corsHeaders(),
+    'Content-Type': 'text/plain; charset=utf-8',
+    'Cache-Control': 'no-cache',
+    Connection: 'keep-alive',
+    'Transfer-Encoding': 'chunked',
+  })
+
+  for (let i = 0; i < text.length; i += 2) {
+    res.write(text.slice(i, i + 2))
+    await sleep(45)
+  }
+
+  res.end()
+}
+
 const server = http.createServer(async (req, res) => {
   if (req.method === 'OPTIONS') {
     res.writeHead(204, corsHeaders())
@@ -129,6 +150,22 @@ const server = http.createServer(async (req, res) => {
       clearInterval(interval)
       sseClients.delete(res)
     })
+    return
+  }
+
+  if (req.url === '/api/fetch-stream' && req.method === 'POST') {
+    try {
+      const body = await readBody(req)
+      const { text } = JSON.parse(body)
+      const reply = text?.trim()
+        ? `${randomReply()} (you said: "${text.trim()}")`
+        : randomReply()
+
+      await streamFetchResponse(res, reply)
+    } catch {
+      res.writeHead(400, { ...corsHeaders(), 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ error: 'Invalid request' }))
+    }
     return
   }
 
@@ -235,6 +272,7 @@ wss.on('connection', (socket) => {
 
 server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
-  console.log(`SSE:  /api/chat/stream`)
-  console.log(`WS:   ws://localhost:${PORT}/ws`)
+  console.log(`SSE:   /api/chat/stream`)
+  console.log(`Fetch: POST /api/fetch-stream`)
+  console.log(`WS:    ws://localhost:${PORT}/ws`)
 })
