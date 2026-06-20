@@ -5,6 +5,7 @@ import UploadPage from './pages/UploadPage.jsx'
 import ChatPage from './pages/ChatPage.jsx'
 import SocketChatPage from './pages/SocketChatPage.jsx'
 import FetchStreamPage from './pages/FetchStreamPage.jsx'
+import HLSPage from './pages/HLSPage.jsx'
 import './App.css'
 
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
         <Link to="/chat">Chat</Link>
         <Link to="/socket">Socket</Link>
         <Link to="/fetch">Fetch</Link>
+        <Link to="/hls">HLS</Link>
       </nav>
 
       <Routes>
@@ -26,6 +28,7 @@ export default function App() {
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/socket" element={<SocketChatPage />} />
         <Route path="/fetch" element={<FetchStreamPage />} />
+        <Route path="/hls" element={<HLSPage />} />
       </Routes>
     </div>
   )
