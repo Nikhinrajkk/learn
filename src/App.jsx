@@ -1,4 +1,4 @@
-import { Link, Route, Routes } from 'react-router-dom'
+import { NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import PrimePage from './pages/PrimePage.jsx'
 import PhotoPage from './pages/PhotoPage.jsx'
 import UploadPage from './pages/UploadPage.jsx'
@@ -8,28 +8,96 @@ import FetchStreamPage from './pages/FetchStreamPage.jsx'
 import HLSPage from './pages/HLSPage.jsx'
 import './App.css'
 
+const NAV = [
+  {
+    title: 'Web Worker',
+    links: [
+      { to: '/', label: 'Primes', end: true },
+      { to: '/photo', label: 'Camera' },
+      { to: '/upload', label: 'Upload & Crop' },
+    ],
+  },
+  {
+    title: 'Communication',
+    links: [
+      { to: '/chat', label: 'SSE Chat' },
+      { to: '/socket', label: 'Socket Chat' },
+      { to: '/fetch', label: 'Fetch Stream' },
+    ],
+  },
+  {
+    title: 'HLS',
+    links: [{ to: '/hls', label: 'Video Player' }],
+  },
+]
+
+const PAGE_TITLES = {
+  '/': 'Primes Worker',
+  '/photo': 'Camera Compress',
+  '/upload': 'Upload & Crop',
+  '/chat': 'SSE Chat',
+  '/socket': 'Socket Chat',
+  '/fetch': 'Fetch Stream',
+  '/hls': 'HLS Player',
+}
+
+function Sidebar() {
+  return (
+    <aside className="sidebar">
+      {NAV.map((group) => (
+        <div key={group.title} className="sidebar-group">
+          <p className="sidebar-title">{group.title}</p>
+          <ul>
+            {group.links.map((link) => (
+              <li key={link.to}>
+                <NavLink to={link.to} end={link.end} className={({ isActive }) => (isActive ? 'active' : '')}>
+                  {link.label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </aside>
+  )
+}
+
+function Header() {
+  const { pathname } = useLocation()
+  const title = PAGE_TITLES[pathname] ?? 'Demo App'
+
+  return (
+    <header className="header">
+      <div className="header-brand">
+        <span className="header-logo">WW</span>
+        <div>
+          <h1>Web Worker Lab</h1>
+          <p>Workers · Streaming · HLS</p>
+        </div>
+      </div>
+      <span className="header-page">{title}</span>
+    </header>
+  )
+}
+
 export default function App() {
   return (
-    <div className="app">
-      <nav>
-        <Link to="/">Primes</Link>
-        <Link to="/photo">Photo</Link>
-        <Link to="/upload">Upload</Link>
-        <Link to="/chat">Chat</Link>
-        <Link to="/socket">Socket</Link>
-        <Link to="/fetch">Fetch</Link>
-        <Link to="/hls">HLS</Link>
-      </nav>
-
-      <Routes>
-        <Route path="/" element={<PrimePage />} />
-        <Route path="/photo" element={<PhotoPage />} />
-        <Route path="/upload" element={<UploadPage />} />
-        <Route path="/chat" element={<ChatPage />} />
-        <Route path="/socket" element={<SocketChatPage />} />
-        <Route path="/fetch" element={<FetchStreamPage />} />
-        <Route path="/hls" element={<HLSPage />} />
-      </Routes>
+    <div className="layout">
+      <Header />
+      <div className="layout-body">
+        <Sidebar />
+        <main className="main">
+          <Routes>
+            <Route path="/" element={<PrimePage />} />
+            <Route path="/photo" element={<PhotoPage />} />
+            <Route path="/upload" element={<UploadPage />} />
+            <Route path="/chat" element={<ChatPage />} />
+            <Route path="/socket" element={<SocketChatPage />} />
+            <Route path="/fetch" element={<FetchStreamPage />} />
+            <Route path="/hls" element={<HLSPage />} />
+          </Routes>
+        </main>
+      </div>
     </div>
   )
 }
