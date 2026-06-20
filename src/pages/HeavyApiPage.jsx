@@ -90,7 +90,7 @@ export default function HeavyApiPage() {
           className="anim-loader"
           style={{ transform: `rotate(${(frameTick * 3) % 360}deg)` }}
         />
-        <span>Tick {frameTick} — freezes if main thread is blocked</span>
+        <span>freezes if main thread is blocked</span>
       </div>
 
       <button type="button" onClick={() => setClicks((c) => c + 1)}>
