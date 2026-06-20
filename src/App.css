@@ -572,3 +572,129 @@ input[type='range'] {
   background: linear-gradient(135deg, #646cff, #22c55e);
   flex-shrink: 0;
 }
+
+.idb-forms {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.idb-form-card {
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #e2e5eb;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.idb-form-card h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+}
+
+.idb-form-card label {
+  display: block;
+  margin-bottom: 0.65rem;
+}
+
+.idb-form-card input[type='text'],
+.idb-form-card textarea {
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #d0d4dc;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.idb-hint {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.idb-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.idb-toolbar p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.idb-clear {
+  background: #fff;
+  color: #c0392b;
+  border: 1px solid #e8b4b0;
+}
+
+.idb-empty {
+  color: #666;
+}
+
+.idb-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.idb-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #e2e5eb;
+  border-radius: 10px;
+  overflow: hidden;
+  text-align: left;
+}
+
+.idb-thumb {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  background: #f0f2f5;
+}
+
+.idb-card-body {
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.idb-card-body strong {
+  font-size: 0.9rem;
+}
+
+.idb-card-body span,
+.idb-card-body time {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.idb-note p {
+  margin: 0.25rem 0;
+  font-size: 0.85rem;
+  color: #444;
+  white-space: pre-wrap;
+}
+
+.idb-delete {
+  margin: 0.5rem 0.75rem 0.75rem;
+  align-self: flex-start;
+  background: #fff;
+  color: #c0392b;
+  border: 1px solid #e8b4b0;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.65rem;
+}

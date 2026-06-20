@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import CropBox from '../components/CropBox.jsx'
+import { addItem } from '../db/galleryDb.js'
 import { formatBytes } from '../modules/image/formatBytes.js'
 import ImageWorker from '../workers/image.worker.js?worker'
 
@@ -14,8 +15,10 @@ export default function UploadPage() {
   const [quality, setQuality] = useState(0.7)
   const [processing, setProcessing] = useState(false)
   const [resultUrl, setResultUrl] = useState(null)
+  const [resultBlob, setResultBlob] = useState(null)
   const [stats, setStats] = useState(null)
   const [error, setError] = useState(null)
+  const [savedToGallery, setSavedToGallery] = useState(false)
 
   useEffect(() => {
     const worker = new ImageWorker()
@@ -25,6 +28,8 @@ export default function UploadPage() {
       const { buffer, type, originalBytes, compressedBytes, width, height, ms } = event.data
       const blob = new Blob([buffer], { type })
 
+      setResultBlob(blob)
+      setSavedToGallery(false)
       setResultUrl((prev) => {
         if (prev) URL.revokeObjectURL(prev)
         return URL.createObjectURL(blob)
@@ -60,6 +65,8 @@ export default function UploadPage() {
     setFile(selected)
     setCrop({ x: 0.1, y: 0.1, w: 0.8, h: 0.8 })
     setStats(null)
+    setSavedToGallery(false)
+    setResultBlob(null)
     setError(null)
     setResultUrl((prev) => {
       if (prev) URL.revokeObjectURL(prev)
@@ -90,6 +97,7 @@ export default function UploadPage() {
     const imageData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height)
 
     setProcessing(true)
+    setSavedToGallery(false)
     setError(null)
     workerRef.current.postMessage(
       {
@@ -101,6 +109,22 @@ export default function UploadPage() {
       },
       [imageData.data.buffer],
     )
+  }
+
+  async function saveToGallery() {
+    if (!resultBlob || !file) return
+    try {
+      await addItem({
+        type: 'image',
+        name: `crop-${file.name}`,
+        mime: resultBlob.type,
+        size: resultBlob.size,
+        blob: resultBlob,
+      })
+      setSavedToGallery(true)
+    } catch {
+      setError('Failed to save to IndexedDB')
+    }
   }
 
   return (
@@ -161,7 +185,12 @@ export default function UploadPage() {
       {resultUrl && (
         <figure>
           <img src={resultUrl} alt="Processed result" className="result-image" />
-          <figcaption>Result from worker</figcaption>
+          <figcaption>
+            Result from worker
+            <button type="button" onClick={saveToGallery} disabled={savedToGallery}>
+              {savedToGallery ? 'Saved to IndexedDB' : 'Save to IndexedDB'}
+            </button>
+          </figcaption>
         </figure>
       )}
     </section>
