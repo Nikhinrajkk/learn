@@ -14,13 +14,11 @@ export default function HeavyApiPage() {
   const [delay, setDelay] = useState(2000)
   const [requestTimeout, setRequestTimeout] = useState(30000)
   const [frameTick, setFrameTick] = useState(0)
-  const [jsSpin, setJsSpin] = useState(0)
 
   useEffect(() => {
     let id
     const tick = () => {
       setFrameTick((t) => t + 1)
-      setJsSpin((deg) => (deg + 3) % 360)
       id = requestAnimationFrame(tick)
     }
     id = requestAnimationFrame(tick)
@@ -84,43 +82,15 @@ export default function HeavyApiPage() {
       <h1>Heavy API Worker</h1>
       <p>
         Same heavy CPU work — worker keeps the UI alive, main thread freezes it.
-        Watch the animation counter and try clicking while each runs.
+        Watch the loader and try clicking while each runs.
       </p>
 
       <div className="anim-panel">
-        <p className="anim-panel-title">Live UI animations (freeze when main thread is blocked)</p>
-        <div className="anim-grid">
-          <div className="anim-card">
-            <div className="anim-spinner" />
-            <span>CSS spin</span>
-          </div>
-          <div className="anim-card">
-            <div className="anim-dots">
-              <span />
-              <span />
-              <span />
-            </div>
-            <span>Bouncing dots</span>
-          </div>
-          <div className="anim-card">
-            <div className="anim-shimmer" />
-            <span>Shimmer bar</span>
-          </div>
-          <div className="anim-card">
-            <div className="anim-slide" />
-            <span>Slide gradient</span>
-          </div>
-          <div className="anim-card">
-            <div className="anim-js-spin" style={{ transform: `rotate(${jsSpin}deg)` }} />
-            <span>JS spin · tick {frameTick}</span>
-          </div>
-          <div className="anim-card">
-            <div className="anim-ring">
-              <span>{frameTick % 100}</span>
-            </div>
-            <span>Live counter</span>
-          </div>
-        </div>
+        <div
+          className="anim-loader"
+          style={{ transform: `rotate(${(frameTick * 3) % 360}deg)` }}
+        />
+        <span>Tick {frameTick} — freezes if main thread is blocked</span>
       </div>
 
       <button type="button" onClick={() => setClicks((c) => c + 1)}>
