@@ -8,6 +8,7 @@ import FetchStreamPage from './pages/FetchStreamPage.jsx'
 import HLSPage from './pages/HLSPage.jsx'
 import HeavyApiPage from './pages/HeavyApiPage.jsx'
 import GalleryPage from './pages/GalleryPage.jsx'
+import WebRTCPage from './pages/WebRTCPage.jsx'
 import './App.css'
 
 const NAV = [
@@ -30,6 +31,7 @@ const NAV = [
       { to: '/chat', label: 'SSE Chat' },
       { to: '/socket', label: 'Socket Chat' },
       { to: '/fetch', label: 'Fetch Stream' },
+      { to: '/webrtc', label: 'WebRTC' },
     ],
   },
   {
@@ -47,6 +49,7 @@ const PAGE_TITLES = {
   '/chat': 'SSE Chat',
   '/socket': 'Socket Chat',
   '/fetch': 'Fetch Stream',
+  '/webrtc': 'WebRTC Call',
   '/hls': 'HLS Player',
 }
 
@@ -105,6 +108,7 @@ export default function App() {
             <Route path="/chat" element={<ChatPage />} />
             <Route path="/socket" element={<SocketChatPage />} />
             <Route path="/fetch" element={<FetchStreamPage />} />
+            <Route path="/webrtc" element={<WebRTCPage />} />
             <Route path="/hls" element={<HLSPage />} />
           </Routes>
         </main>

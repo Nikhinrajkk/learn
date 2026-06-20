@@ -698,3 +698,92 @@ input[type='range'] {
   font-size: 0.85rem;
   padding: 0.35rem 0.65rem;
 }
+
+.webrtc-page {
+  text-align: left;
+}
+
+.webrtc-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  align-items: end;
+  margin-bottom: 1rem;
+}
+
+.webrtc-controls label {
+  display: block;
+}
+
+.webrtc-controls input {
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #d0d4dc;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.webrtc-controls-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.webrtc-room-info {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.webrtc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.webrtc-tile {
+  background: #fff;
+  border: 1px solid #e2e5eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.webrtc-tile.local .webrtc-video {
+  transform: scaleX(-1);
+}
+
+.webrtc-video {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: #111;
+  display: block;
+}
+
+.webrtc-tile-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.webrtc-state {
+  color: #666;
+}
+
+.webrtc-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 1rem;
+  color: #666;
+  text-align: center;
+}
+
+.webrtc-placeholder p {
+  margin: 0;
+}

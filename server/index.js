@@ -36,6 +36,10 @@ function randomReply() {
 const sseClients = new Set()
 const socketClients = new Map()
 let messageId = 1
+let rtcPeerIdCounter = 1
+
+const rtcClients = new Map()
+const rtcRooms = new Map()
 
 function corsHeaders() {
   return {
@@ -87,6 +91,39 @@ function broadcastSocket(payload, excludeSocket = null) {
 function sendSocket(socket, payload) {
   if (socket.readyState === socket.OPEN) {
     socket.send(JSON.stringify(payload))
+  }
+}
+
+function rtcSend(socket, payload) {
+  sendSocket(socket, payload)
+}
+
+function findRtcSocket(peerId) {
+  for (const [socket, client] of rtcClients) {
+    if (client.peerId === peerId) return socket
+  }
+  return null
+}
+
+function leaveRtcRoom(socket) {
+  const client = rtcClients.get(socket)
+  if (!client?.room) return
+
+  const { room, peerId, name } = client
+  const roomSet = rtcRooms.get(room)
+  if (roomSet) {
+    roomSet.delete(socket)
+    if (roomSet.size === 0) rtcRooms.delete(room)
+    else rtcBroadcast(room, { type: 'peer-left', peerId, name }, socket)
+  }
+  client.room = null
+}
+
+function rtcBroadcast(room, payload, excludeSocket = null) {
+  const roomSet = rtcRooms.get(room)
+  if (!roomSet) return
+  for (const peerSocket of roomSet) {
+    if (peerSocket !== excludeSocket) rtcSend(peerSocket, payload)
   }
 }
 
@@ -261,7 +298,28 @@ const server = http.createServer(async (req, res) => {
   res.end('Not found')
 })
 
-const wss = new WebSocketServer({ server, path: '/ws' })
+const wss = new WebSocketServer({ noServer: true })
+const wssRtc = new WebSocketServer({ noServer: true })
+
+server.on('upgrade', (request, socket, head) => {
+  const pathname = new URL(request.url, `http://localhost:${PORT}`).pathname
+
+  if (pathname === '/ws') {
+    wss.handleUpgrade(request, socket, head, (ws) => {
+      wss.emit('connection', ws, request)
+    })
+    return
+  }
+
+  if (pathname === '/ws/webrtc') {
+    wssRtc.handleUpgrade(request, socket, head, (ws) => {
+      wssRtc.emit('connection', ws, request)
+    })
+    return
+  }
+
+  socket.destroy()
+})
 
 wss.on('connection', (socket) => {
   socketClients.set(socket, { name: 'guest' })
@@ -326,10 +384,73 @@ wss.on('connection', (socket) => {
   })
 })
 
+wssRtc.on('connection', (socket) => {
+  const peerId = `peer-${rtcPeerIdCounter++}`
+  rtcClients.set(socket, { peerId, room: null, name: peerId })
+
+  socket.on('message', (raw) => {
+    let data
+    try {
+      data = JSON.parse(raw.toString())
+    } catch {
+      return
+    }
+
+    const client = rtcClients.get(socket)
+    if (!client) return
+
+    if (data.type === 'join') {
+      leaveRtcRoom(socket)
+
+      const room = data.room?.trim() || 'lobby'
+      const name = data.name?.trim() || client.peerId
+      client.room = room
+      client.name = name
+
+      if (!rtcRooms.has(room)) rtcRooms.set(room, new Set())
+      const roomSet = rtcRooms.get(room)
+
+      const peers = [...roomSet].map((peerSocket) => {
+        const peer = rtcClients.get(peerSocket)
+        return { peerId: peer.peerId, name: peer.name }
+      })
+
+      rtcSend(socket, { type: 'welcome', peerId: client.peerId, room, peers })
+
+      roomSet.add(socket)
+      rtcBroadcast(room, { type: 'peer-joined', peerId: client.peerId, name: client.name }, socket)
+      return
+    }
+
+    if (data.type === 'signal' && data.to && data.signal) {
+      const target = findRtcSocket(data.to)
+      if (target) {
+        rtcSend(target, {
+          type: 'signal',
+          from: client.peerId,
+          signal: data.signal,
+        })
+      }
+      return
+    }
+
+    if (data.type === 'leave') {
+      leaveRtcRoom(socket)
+      rtcSend(socket, { type: 'left' })
+    }
+  })
+
+  socket.on('close', () => {
+    leaveRtcRoom(socket)
+    rtcClients.delete(socket)
+  })
+})
+
 server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
   console.log(`SSE:   /api/chat/stream`)
   console.log(`Fetch: POST /api/fetch-stream`)
   console.log(`Heavy: GET /api/heavy`)
   console.log(`WS:    ws://localhost:${PORT}/ws`)
+  console.log(`RTC:   ws://localhost:${PORT}/ws/webrtc`)
 })
