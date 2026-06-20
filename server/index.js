@@ -169,6 +169,62 @@ const server = http.createServer(async (req, res) => {
     return
   }
 
+  if (req.url?.startsWith('/api/heavy') && req.method === 'GET') {
+    const url = new URL(req.url, `http://localhost:${PORT}`)
+    const size = Math.min(Number(url.searchParams.get('size')) || 20000, 100000)
+    const delay = Math.min(Number(url.searchParams.get('delay')) || 2000, 30000)
+    const timeout = Math.min(Number(url.searchParams.get('timeout')) || 15000, 60000)
+    const start = performance.now()
+
+    const timedOut = () => performance.now() - start > timeout
+
+    const failTimeout = () => {
+      res.writeHead(504, { ...corsHeaders(), 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ error: `Request timed out after ${timeout}ms` }))
+    }
+
+    if (delay > 0) {
+      await sleep(delay)
+    }
+
+    if (timedOut()) {
+      failTimeout()
+      return
+    }
+
+    let checksum = 0
+    for (let i = 0; i < 3000000; i++) {
+      checksum += i % 97
+      if (i % 500000 === 0 && timedOut()) {
+        failTimeout()
+        return
+      }
+    }
+
+    const items = Array.from({ length: size }, (_, index) => ({
+      id: index,
+      value: (index * 17) % 1000,
+    }))
+
+    if (timedOut()) {
+      failTimeout()
+      return
+    }
+
+    res.writeHead(200, { ...corsHeaders(), 'Content-Type': 'application/json' })
+    res.end(
+      JSON.stringify({
+        items,
+        count: items.length,
+        checksum,
+        delayMs: delay,
+        timeoutMs: timeout,
+        serverMs: Math.round(performance.now() - start),
+      }),
+    )
+    return
+  }
+
   if (req.url === '/api/chat/send' && req.method === 'POST') {
     try {
       const body = await readBody(req)
@@ -274,5 +330,6 @@ server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
   console.log(`SSE:   /api/chat/stream`)
   console.log(`Fetch: POST /api/fetch-stream`)
+  console.log(`Heavy: GET /api/heavy`)
   console.log(`WS:    ws://localhost:${PORT}/ws`)
 })

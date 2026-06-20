@@ -6,6 +6,7 @@ import ChatPage from './pages/ChatPage.jsx'
 import SocketChatPage from './pages/SocketChatPage.jsx'
 import FetchStreamPage from './pages/FetchStreamPage.jsx'
 import HLSPage from './pages/HLSPage.jsx'
+import HeavyApiPage from './pages/HeavyApiPage.jsx'
 import './App.css'
 
 const NAV = [
@@ -15,6 +16,7 @@ const NAV = [
       { to: '/', label: 'Primes', end: true },
       { to: '/photo', label: 'Camera' },
       { to: '/upload', label: 'Upload & Crop' },
+      { to: '/heavy-api', label: 'Heavy API' },
     ],
   },
   {
@@ -35,6 +37,7 @@ const PAGE_TITLES = {
   '/': 'Primes Worker',
   '/photo': 'Camera Compress',
   '/upload': 'Upload & Crop',
+  '/heavy-api': 'Heavy API Worker',
   '/chat': 'SSE Chat',
   '/socket': 'Socket Chat',
   '/fetch': 'Fetch Stream',
@@ -91,6 +94,7 @@ export default function App() {
             <Route path="/" element={<PrimePage />} />
             <Route path="/photo" element={<PhotoPage />} />
             <Route path="/upload" element={<UploadPage />} />
+            <Route path="/heavy-api" element={<HeavyApiPage />} />
             <Route path="/chat" element={<ChatPage />} />
             <Route path="/socket" element={<SocketChatPage />} />
             <Route path="/fetch" element={<FetchStreamPage />} />
