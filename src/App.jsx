@@ -10,6 +10,7 @@ import HLSPage from './pages/HLSPage.jsx'
 import HeavyApiPage from './pages/HeavyApiPage.jsx'
 import GalleryPage from './pages/GalleryPage.jsx'
 import WebRTCPage from './pages/WebRTCPage.jsx'
+import WasmPage from './pages/WasmPage.jsx'
 const SkiaEditorPage = lazy(() => import('./pages/SkiaEditorPage.jsx'))
 import './App.css'
 
@@ -37,6 +38,10 @@ const NAV = [
     ],
   },
   {
+    title: 'WebAssembly',
+    links: [{ to: '/wasm', label: 'Learn WASM' }],
+  },
+  {
     title: 'Skia',
     links: [{ to: '/skia', label: 'Editor' }],
   },
@@ -56,6 +61,7 @@ const PAGE_TITLES = {
   '/socket': 'Socket Chat',
   '/fetch': 'Fetch Stream',
   '/webrtc': 'WebRTC Call',
+  '/wasm': 'Learn WASM',
   '/skia': 'Skia Editor',
   '/hls': 'HLS Player',
 }
@@ -116,6 +122,7 @@ export default function App() {
             <Route path="/socket" element={<SocketChatPage />} />
             <Route path="/fetch" element={<FetchStreamPage />} />
             <Route path="/webrtc" element={<WebRTCPage />} />
+            <Route path="/wasm" element={<WasmPage />} />
             <Route
               path="/skia"
               element={

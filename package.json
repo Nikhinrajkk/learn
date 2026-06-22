@@ -7,6 +7,7 @@
     "dev": "vite",
     "server": "node server/index.js",
     "generate:hls": "bash scripts/generate-hls.sh",
+    "build:wasm": "wat2wasm wasm/learn.wat -o public/wasm/learn.wasm && cp wasm/learn.wat public/wasm/learn.wat",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^6.0.1",
-    "vite": "^8.0.12"
+    "vite": "^8.0.12",
+    "wabt": "^1.0.39"
   }
 }
