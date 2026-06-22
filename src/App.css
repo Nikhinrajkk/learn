@@ -787,3 +787,144 @@ input[type='range'] {
 .webrtc-placeholder p {
   margin: 0;
 }
+
+.skia-page {
+  text-align: left;
+}
+
+.skia-layout {
+  display: grid;
+  grid-template-columns: 1fr minmax(260px, 320px);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .skia-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.skia-workspace {
+  min-width: 0;
+}
+
+.skia-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.75rem;
+  background: #fff;
+  border: 1px solid #e2e5eb;
+  border-radius: 10px 10px 0 0;
+  border-bottom: none;
+}
+
+.skia-tool-group {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.skia-toolbar button {
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
+  background: #f0f2f5;
+  border: 1px solid #d0d4dc;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.skia-toolbar button.active {
+  background: #646cff;
+  color: #fff;
+  border-color: #646cff;
+}
+
+.skia-toolbar button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.skia-colors {
+  align-items: center;
+}
+
+.skia-swatch {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+}
+
+.skia-swatch.active {
+  border-color: #1a1a2e;
+  box-shadow: 0 0 0 2px #fff inset;
+}
+
+.skia-width {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.8rem;
+  color: #555;
+  min-width: 120px;
+}
+
+.skia-canvas {
+  display: block;
+  width: 100%;
+  height: 420px;
+  background: #fff;
+  border: 1px solid #e2e5eb;
+  border-radius: 0 0 10px 10px;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.skia-meta {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.skia-learn {
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #e2e5eb;
+  border-radius: 10px;
+  font-size: 0.85rem;
+}
+
+.skia-learn h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+}
+
+.skia-concept {
+  margin-bottom: 1rem;
+}
+
+.skia-concept h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.9rem;
+  color: #646cff;
+}
+
+.skia-concept p {
+  margin: 0.35rem 0 0;
+  color: #555;
+  line-height: 1.45;
+}
+
+.skia-concept pre {
+  margin: 0;
+  padding: 0.5rem 0.65rem;
+  background: #f0f2f5;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  overflow-x: auto;
+  line-height: 1.4;
+}

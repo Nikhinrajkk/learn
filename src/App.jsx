@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import PrimePage from './pages/PrimePage.jsx'
 import PhotoPage from './pages/PhotoPage.jsx'
@@ -9,6 +10,7 @@ import HLSPage from './pages/HLSPage.jsx'
 import HeavyApiPage from './pages/HeavyApiPage.jsx'
 import GalleryPage from './pages/GalleryPage.jsx'
 import WebRTCPage from './pages/WebRTCPage.jsx'
+const SkiaEditorPage = lazy(() => import('./pages/SkiaEditorPage.jsx'))
 import './App.css'
 
 const NAV = [
@@ -35,6 +37,10 @@ const NAV = [
     ],
   },
   {
+    title: 'Skia',
+    links: [{ to: '/skia', label: 'Editor' }],
+  },
+  {
     title: 'HLS',
     links: [{ to: '/hls', label: 'Video Player' }],
   },
@@ -50,6 +56,7 @@ const PAGE_TITLES = {
   '/socket': 'Socket Chat',
   '/fetch': 'Fetch Stream',
   '/webrtc': 'WebRTC Call',
+  '/skia': 'Skia Editor',
   '/hls': 'HLS Player',
 }
 
@@ -109,6 +116,14 @@ export default function App() {
             <Route path="/socket" element={<SocketChatPage />} />
             <Route path="/fetch" element={<FetchStreamPage />} />
             <Route path="/webrtc" element={<WebRTCPage />} />
+            <Route
+              path="/skia"
+              element={
+                <Suspense fallback={<p className="page">Loading Skia WASM…</p>}>
+                  <SkiaEditorPage />
+                </Suspense>
+              }
+            />
             <Route path="/hls" element={<HLSPage />} />
           </Routes>
         </main>
